@@ -1,0 +1,36 @@
+version: "3"
+services:
+
+  web:
+    build: ./web
+    environment:
+      - APACHE_RUN_USER=www-data
+    volumes:
+      - ./:/var/www/html/
+    container_name: web-app
+    ports:
+      - "80:80"
+    working_dir: /var/www/html/
+    links:
+      - postgres
+
+  postgres:
+    image: postgres:10.6
+    restart: always
+    container_name: pg-app
+    environment:
+      POSTGRES_DB: symfony
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 123456
+    volumes:
+#      - ./db_dump:/docker-entrypoint-initdb.d/
+      - ./db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+#    composer:
+#      image: composer:1.8
+#      volumes:
+#        - ./:/var/www/html/
+#      working_dir: /var/www/html/
+#      command: composer install
